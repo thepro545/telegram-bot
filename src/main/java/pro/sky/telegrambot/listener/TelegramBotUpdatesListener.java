@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.model.NotificationTask;
+import pro.sky.telegrambot.repository.NotificationRepository;
 import pro.sky.telegrambot.service.NotificationService;
 
 import javax.annotation.PostConstruct;
@@ -26,13 +27,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     private static final String INVALID_ID_NOTIFY_OR_CMD = "Ошибка уведомления или команды";
 
-    private static TelegramBot telegramBot;
+    private final TelegramBot telegramBot;
 
-    private static NotificationService notificationService;
-
-
-    public TelegramBotUpdatesListener() {
-    }
+    private final NotificationService notificationService;
 
     public TelegramBotUpdatesListener(TelegramBot telegramBot, NotificationService notificationService) {
         this.telegramBot = telegramBot;

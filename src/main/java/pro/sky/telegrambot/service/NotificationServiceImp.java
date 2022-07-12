@@ -10,6 +10,7 @@ import pro.sky.telegrambot.repository.NotificationRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -33,6 +34,7 @@ public class NotificationServiceImp implements NotificationService {
 
     @Override
     public NotificationTask schedule(Long chatId, NotificationTask task) {
+        logger.info("Processing schedule ");
         task.setChatId(chatId);
         NotificationTask storedTask = notificationRepository.save(task);
         return storedTask;
@@ -40,6 +42,7 @@ public class NotificationServiceImp implements NotificationService {
 
     @Override
     public Optional<NotificationTask> parse(String notificationBotMessage) {
+        logger.info("Processing parse ");
         Pattern pattern = Pattern.compile(REGEX_BOT_MESSAGE);
         Matcher matcher = pattern.matcher(notificationBotMessage);
 
@@ -53,13 +56,15 @@ public class NotificationServiceImp implements NotificationService {
             }
 
         } catch (RuntimeException e) {
-            logger.error("Ошибка парсинга" + notificationBotMessage, e);
+            logger.error("Ошибка парсинга " + notificationBotMessage, e);
         }
+
         return Optional.ofNullable(result);
     }
 
     @Override
     public void notifyAllScheduledTasks(Consumer<NotificationTask> notifier) {
+        logger.info("Processing notifyAllScheduledTasks ");
         Collection<NotificationTask> notifications = notificationRepository.getScheduledNotifications();
         for (NotificationTask task : notifications) {
             notifier.accept(task);
