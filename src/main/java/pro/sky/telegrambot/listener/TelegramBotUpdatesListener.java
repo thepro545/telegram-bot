@@ -7,10 +7,10 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.model.NotificationTask;
-import pro.sky.telegrambot.repository.NotificationRepository;
 import pro.sky.telegrambot.service.NotificationService;
 
 import javax.annotation.PostConstruct;
@@ -27,6 +27,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     private static final String INVALID_ID_NOTIFY_OR_CMD = "Ошибка уведомления или команды";
 
+    @Autowired
     private final TelegramBot telegramBot;
 
     private final NotificationService notificationService;
@@ -55,6 +56,11 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                         () -> sendMessage(extractChatId(message), INVALID_ID_NOTIFY_OR_CMD)
                 );
             }
+//            Берем дату с пользователя
+//            Date ttime = new Date();
+//            var t = ttime.getTime();
+//            long time = update.message().date();
+//            Date dateTest = new Date(time*1000);
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
@@ -78,6 +84,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     }
 
     private void scheduleNotification(Long chatId, NotificationTask task) {
+
         notificationService.schedule(chatId, task);
         sendMessage(chatId, "Уведомление успешно добавлено");
     }
